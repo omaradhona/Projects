@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Snake Game</title>
+	</head>
+
+	<style>
+	body{
+		padding-top: 3%;
+		background-color: lightslategray;
+	}
+
+	#game{
+		border: 1px solid black;
+		width: fit-content;
+		padding: 5px;
+		margin: auto;
+	}
+
+	canvas{
+		border: 1px solid black;
+	}
+
+	#description{
+		font-size: 25px;
+		font-weight: bold;
+		text-align: center;
+	}
+	</style>
+
+	<body>
+		<div id="game">
+			<div>
+				Score : <span id = "score">0</span><br />
+				Best Score : <span id = "bestScore">0</span><br />
+				<div id="description">Press any button to start game</div>
+			</div>
+			<canvas id="canvas">
+			</canvas>
+		</div>
+		
+		<script>
+			// initiating canvas for drawing
+			var canvas = document.getElementById("canvas");
+			var ctx = canvas.getContext("2d");
+			canvas.width = 500;
+			canvas.height = 500;
+
+			var score = document.getElementById("score");
+			var bestScore = document.getElementById("bestScore");
+			var description = document.getElementById("description");
+			var keypressed;
+			var gameOn;
+
+			
+
+			// get the keycode of the pressed button for adding controller
+			window.addEventListener('keydown', function(e){
+				keypressed = e.keyCode;
+				if(gameOn != true){
+					gameStart();					
+				}
+				
+			})
+
+			var piece = new component(25, 25, "SpringGreen", 125, 100);
+			var food = new component(25, 25, "YellowGreen", Math.floor(Math.random()*20)*25, Math.floor(Math.random()*20)*25);
+			
+			var initialPositions = [[125, 100], [100, 100], [75, 100], [50, 100], [25, 100], [0, 100]];
+			var snakeBody = initialPositions;
+
+			function component(width, height, color, x, y){
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+
+				this.update = function(){
+					c = ctx;		
+					c.fillStyle = color;
+					c.fillRect(this.x, this.y, this.width, this.height);
+				}
+			}
+			
+			function clear(){			
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+			}
+			
+			
+			
+			
+			function goRight(){
+				piece.x += 25;
+				snakeBody[0][0] = piece.x - 25;
+				snakeBody[0][1] = piece.y;
+				if(piece.x == canvas.width){
+					piece.x = 0;
+				}
+			}
+
+			function goLeft(){
+				piece.x -= 25;
+				snakeBody[0][0] = piece.x + 25;
+				snakeBody[0][1] = piece.y;
+				if(piece.x == -25){
+					piece.x = canvas.width - piece.width;
+				}
+			}
+
+			function goUp(){
+				piece.y -= 25;
+				snakeBody[0][0] = piece.x;
+				snakeBody[0][1] = piece.y + 25;
+				if(piece.y == -25){
+					piece.y = canvas.height - piece.height;
+				}
+			}
+
+			function goDown(){
+				piece.y += 25;
+				snakeBody[0][0] = piece.x;
+				snakeBody[0][1] = piece.y - 25;
+				if(piece.y == canvas.height){
+					piece.y = 0;
+				}
+			}
+
+			function checkPressedArrow(){
+				if(keypressed == 39 && (snakeBody[0][0] <= piece.x || canvas.width - snakeBody[0][0] - 25 == piece.x)){
+					
+					
+					goRight();
+				}
+				else if(keypressed == 37 && (snakeBody[0][0] >= piece.x || canvas.width - piece.x - 25 == snakeBody[0][0])){
+					
+					
+					goLeft();
+				}
+				else if(keypressed == 40 && (snakeBody[0][1] <= piece.y || canvas.height - snakeBody[0][1] - 25 == piece.y)){
+					
+					
+					goDown();
+				}
+				else if(keypressed == 38 && (snakeBody[0][1] >= piece.y || canvas.height - piece.y - 25 == snakeBody[0][1])){
+					
+					
+					goUp();
+				}
+				
+			}
+			
+			function lost(){
+				clearInterval(z);
+				gameOn = false;
+				description.innerHTML = "Game over ! Press any button to play again";
+				/*if(keypressed){
+					piece.x = 125;
+					piece.y = 100;
+					snakeBody = [[125, 100], [100, 100], [75, 100], [50, 100], [25, 100], [0, 100]];
+					score.innerHTML = 0;
+					
+				}*/
+				
+			}
+			updateFrame();
+			
+			var z;
+			function gameStart(){
+				gameOn = true;
+				description.innerHTML = "";
+				z = setInterval(updateFrame, 50)
+				piece.x = 125;
+				piece.y = 100;
+				snakeBody = [[125, 100], [100, 100], [75, 100], [50, 100], [25, 100], [0, 100]];
+				score.innerHTML = 0;
+			}
+			
+			gameStart();
+			
+			
+			function updateFrame(){
+				clear();
+				
+				// change the snake's head position based on the last pressed key
+				checkPressedArrow();
+				
+				
+				/*
+				if(left == true && keypressed == 39){goLeft();}
+				if(right == true && keypressed == 37){goRight();}
+				if(up == true && keypressed == 40){goUp();}
+				if(down == true && keypressed == 38){goDown();}
+				*/
+				
+				// fill and stroke canvas
+				ctx.fillStyle = "rgb(23, 32, 42)";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				for(x = 0; x < canvas.width; x += 25){
+					for(y = 0; y < canvas.height; y += 25){
+						ctx.strokeRect(x, y, 25, 25);
+					}
+				}
+				
+				// snake movement logic : for each frame, each piece of snake body takes the position of the one before it if it is moving
+				if(keypressed){
+					for(i = snakeBody.length - 1; i > 0; i--){
+						snakeBody[i][0] = snakeBody[i-1][0];
+						snakeBody[i][1] = snakeBody[i-1][1];
+					}
+				}
+
+				// draw and color snake body
+				ctx.fillStyle = "Tomato";
+				for(q = 0; q < snakeBody.length; q++){
+					ctx.fillRect(snakeBody[q][0], snakeBody[q][1], 25, 25);
+					// losing condition : check if both coordinates of "food" match both coordinates of any piece of "snakebody"
+					if(piece.x == snakeBody[q][0] && piece.y == snakeBody[q][1] && q > 1){
+						//keypressed = false;
+						
+						lost();
+					}
+					
+					if(food.x == snakeBody[q][0] && food.y == snakeBody[q][1]){;}
+				}
+				
+				// color the head differently than the body, overwrite the color done just above
+				piece.update();
+				
+				// the snake grows
+				if(piece.x == food.x && piece.y == food.y){
+					// assign "food" different random coordinates
+					food.x = Math.floor(Math.random()*20)*25;
+					food.y = Math.floor(Math.random()*20)*25;
+					// elongate the snake body by one piece
+					snakeBody.push([[0, 0]]);
+					// add score by 1
+					score.innerHTML = snakeBody.length - 6;
+					if(score.innerHTML >= bestScore.innerHTML){
+						bestScore.innerHTML = score.innerHTML;
+					}
+				}
+
+				food.update();
+			}
+			
+			
+			//var z = setInterval(, 50);
+			
+		</script>
+	</body>
+</html>

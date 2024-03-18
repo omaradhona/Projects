@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+	<!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  </head>
+
+  <style>
+	:root{
+		--primary-color: #009688;
+	}
+
+	.current-tag{
+		padding: 1px 8px;
+	}
+
+	#print-btn{
+		position: fixed;
+		top: 4px;
+		right: 4px;
+	}
+
+	button{
+		border: 1px solid gray;
+		border-radius: 4px;
+	}
+
+	.primary-color{
+		color: var(--primary-color);
+	}
+
+	.primary-background{
+		background-color: var(--primary-color);
+	}
+
+	.left-section{
+		box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
+	}
+	
+	.h5-icons{
+		font-size: 18px;
+	}
+
+	.progress-background{
+		background-color: #f1f1f1;
+	}
+
+	.list-dot{
+		width: 8px;
+		height: 8px;
+		background-color: var(--primary-color);
+		border-radius: 50%;
+	}
+
+	.resume-card{
+		box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+	}
+
+	.large-icons{
+		font-size: 36px;
+	}
+
+	.institution{
+		opacity: 0.6;
+	}
+	
+	footer{
+		background-color: var(--primary-color);
+	}
+	
+	footer a{
+		text-decoration: none;
+	}
+  </style>
+
+  <body>
+	<!-- <span class="w3-tag primary-background w3-round">Current</span> -->
+	<!-- <span class="current-tag text-white primary-background rounded-1">Current</span> -->
+	
+    <div id="root">
+	</div>
+	
+	<script type="text/javascript">
+		var buttons = document.getElementsByTagName("button");
+		function toggleButtons(){
+			if(buttons[0].style.display !== "none"){
+				for(var i = 0; i < buttons.length; i++){
+					buttons[i].style.display = "none";
+				}
+			}
+			else if(buttons[0].style.display == "none"){
+				for(var i = 0; i < buttons.length; i++){
+					buttons[i].style.display = "inline-block";
+				}
+			}
+		}
+
+		function removeSection(x){
+			x.style.display = "none";
+		}
+	</script>
+	
+    <script type="text/babel">
+		function App() {
+			const [showInput, setShowInput] = React.useState(false);
+
+			return (
+				<>
+					<div className="mx-4 my-2">
+						<button id="print-btn">Download PDF</button>
+						{/*The Grid*/}
+						<div className="d-flex justify-content-center column-gap-4">
+							{/*Left Column*/}
+							<div className="col-sm-4">
+								<div className="text-secondary left-section">
+									<div>
+										<div className="d-flex justify-content-center">
+											{/*<img src="myimg.jpg" style={{width:"150px",height:"150px"}} alt="Avatar" />*/}
+											<div className="border d-flex align-items-center text-center mt-3" style={{
+												width: "190px",
+												height: "190px",
+												backgroundImage: "url('img.jpg')",
+												backgroundSize: "100% 100%",
+												backgroundPosition: "center",
+												backgroundRepeat: "no-repeat",
+												borderRadius: "50%",
+												cursor: "pointer",
+											}} onClick={toggleButtons}>
+												<h3 onClick={(e) => removeSection(e.target)}>Click here to show/hide buttons (img.jpg)</h3>
+											</div>
+										</div>
+
+										<h2 className="text-center">
+											<TextElement text="Your Full Name" textAlign="center" />
+										</h2>
+									</div>
+
+									<div className="px-3">
+										<p>
+											<i className="fa fa-briefcase fa-fw me-3 h5-icons primary-color"></i>
+											<TextElement text="Your Job" />
+										</p>
+										<p>
+											<i className="fa fa-home fa-fw me-3 h5-icons primary-color"></i>
+											<TextElement text="Your Adress" />
+										</p>
+										<p>
+											<i className="fa fa-envelope fa-fw me-3 h5-icons primary-color"></i>
+											<TextElement text="Your E-mail" />
+										</p>
+										<p>
+											<i className="fa fa-phone fa-fw me-3 h5-icons primary-color"></i>
+											<TextElement text="Your Phone Number" />
+										</p>
+
+										<hr />
+
+										<p className="d-flex align-items-center fw-bolder h5">
+											<i className="fa fa-asterisk fa-fw me-3 primary-color"></i>
+											<TextElement text="Skills" />
+										</p>
+										<SkillsSection skill="Skill" />
+										<br />
+
+										<p className="d-flex align-items-center fw-bolder h5">
+											<i className="fa fa-globe fa-fw me-3 primary-color"></i>
+											<TextElement text="Languages" />
+										</p>
+										<SkillsSection skill="Language" />
+										<br />
+
+										<div>
+											<p className="d-flex align-items-center fw-bolder h5">
+												<i className="fa fa-star fa-fw me-3 primary-color"></i>
+												<TextElement text="Other" />
+											</p>
+											<SecondarySkills text="Skill" wrapItems={true} />
+											<button onClick={(e) => removeSection(e.target.parentElement)}>Remove Section</button>
+										</div>
+
+										<div>
+											<p className="d-flex align-items-center fw-bolder h5 mt-4">
+												<i className="fa fa-certificate fa-fw me-3 primary-color"></i>
+												<TextElement text="Certifications" />
+											</p>
+											<SecondarySkills text="Certification" />
+											<button onClick={(e) => removeSection(e.target.parentElement)}>Remove Section</button>
+										</div>
+
+										<div>
+											<p className="d-flex align-items-center fw-bolder h5 mt-4">
+												<i className="fa fa-award fa-fw me-3 primary-color"></i>
+												<TextElement text="Awards" />
+											</p>
+											<SecondarySkills text="Award" />
+											<button onClick={(e) => removeSection(e.target.parentElement)}>Remove Section</button>
+										</div>
+										<br />
+									</div>
+								</div>
+
+								{/*End Left Column*/}
+							</div>
+
+							{/*Right Column*/}
+							<div className="col-sm-8">
+
+								{/*summary*/}
+								<div className="resume-card mb-3 px-3 pb-3">
+									<h2 className="text-secondary py-3">
+										<i className="fa fa-user fa-fw me-3 large-icons primary-color"></i>
+										<TextElement text="Summary" />
+									</h2>
+									<div className="px-3">
+										<Summary />
+									</div>
+								</div>
+								{/*end summary*/}
+
+								{/*education*/}
+								<div className="resume-card mb-3 px-3 pb-1">
+									<h2 className="text-secondary py-3">
+										<i className="fa fa-certificate fa-fw me-3 large-icons primary-color"></i>
+										<TextElement text="Education" />
+									</h2>
+									<StageSection
+										type="number"
+										where="School"
+										from="2015"
+										to="2017"
+										description="Degree"
+										isTextOrNumber={true}
+									/>
+								</div>
+								{/*end education*/}
+
+								{/*work experience*/}
+								<div className="resume-card px-3 pb-1">
+									<h2 className="text-secondary py-3">
+										<i className="fa fa-suitcase fa-fw me-3 large-icons primary-color"></i>
+										<TextElement text="Work Experience" />
+									</h2>
+									<StageSection
+										type="month"
+										where="Job"
+										from="2018-03"
+										to="2019-06"
+										description="Job description"
+										isTextOrNumber={false}
+									/>
+								</div>
+								{/*end work experience*/}
+
+								{/*End Right Column*/}
+							</div>
+
+							{/*End Grid*/}
+						</div>
+
+						{/*End Page Container*/}
+					</div>
+
+					<footer className="d-flex justify-content-center align-items-center">
+						<div className="p-2">
+							<button onClick={() => setShowInput(!showInput)}>Edit All</button>
+
+							<SocialMedia icon="fa-brands fa-square-facebook" link="Facebook" showInput={showInput} />							
+							<SocialMedia icon="fa-brands fa-square-twitter" link="Twitter" showInput={showInput} />							
+							<SocialMedia icon="fa-brands fa-square-instagram" link="Instagram" showInput={showInput} />							
+							<SocialMedia icon="fa-brands fa-linkedin" link="Linkedin" showInput={showInput} />							
+							<SocialMedia icon="fa-brands fa-square-github" link="Github" showInput={showInput} />							
+							<SocialMedia icon="fa-brands fa-square-youtube" link="Youtube" showInput={showInput} />
+							
+							<button onClick={(e) => removeSection(e.target.parentElement)}>Remove Section</button>
+						</div>
+					</footer>
+				</>
+			);
+		}
+
+		{/* this component is for the sections : "Other", "Certifications" and "Awards" */}
+		function SecondarySkills(props) {
+			const [skills, setSkills] = React.useState([0])
+
+			return (
+				<>
+					<button onClick={() => setSkills([...skills, skills.length + 1])}>
+						Add
+					</button>
+					<div className={props.wrapItems ? "d-flex flex-wrap" : ""}>
+						{skills.map((skill, index) =>
+							<div key={skill} className="d-flex align-items-center">
+								<div className="list-dot ms-3 me-2"></div>
+								<TextElement text={props.text} />
+								<button onClick={() => setSkills(oldValues => oldValues.filter((value, i) => i !== index))}>
+									Delete
+								</button>
+							</div>
+						)}
+					</div>
+				</>
+			)
+		}
+
+		{/* this component is for the sections : "Skills" and "Languages" */}
+		function SkillsSection(props){
+			const [skills, setSkills] = React.useState([0])
+	
+			return (
+				<>
+					<button onClick={() => setSkills([...skills, skills.length + 1])}>
+						Add
+					</button>
+			
+        			{skills.map((e, index) => 
+						<span key={e}>
+							<Skill skill={props.skill} />
+							<button onClick={() => setSkills(oldValues => oldValues.filter((value, i) => i !== index))}>
+								Delete
+							</button>
+						</span>
+        			)}
+				</>
+			)
+		}
+	
+		{/* this component is for a simple editable text element */}
+		function TextElement(props){
+			const [text, setText] = React.useState(props.text);
+			const [showInput, setShowInput] = React.useState(false);
+
+  			return (
+				<InputMaker
+					pointerOnHover={true}
+					isTextOrNumber={true}
+					width="90%"
+					type="text"
+					textAlign={props.textAlign}
+					value={text}
+					handleChange={(e) => setText(e.target.value)}
+					handleClick={() => setShowInput(true)} 
+					handleBlur={() => setShowInput(false)}         
+					showInput={showInput}
+				/>
+  			);
+		}
+	
+		{/* this component is used for one skill or language, which contain one editable text element and progress bar below it */}
+		function Skill(props) {
+			const [skillRatio, setSkillRatio] = React.useState(50);
+			const [skill, setSkill] = React.useState(props.skill);
+			const [showRatioInput, setShowRatioInput] = React.useState(false);
+			const [showTextInput, setShowTextInput] = React.useState(false);
+
+			return (
+				<div>
+					<InputMaker
+						pointerOnHover={true}
+						isTextOrNumber={true}
+						type="text"
+						value={skill}
+						handleChange={(e) => setSkill(e.target.value)}  
+						handleClick={() => setShowTextInput(true)}
+						handleBlur={() => setShowTextInput(false)}         
+						showInput={showTextInput}
+					/>
+					<div style={{marginTop:"5px",marginBottom:"5px"}}>
+						<ProgressBar
+							value={skillRatio}
+							handleChange={(e) => setSkillRatio(e.target.value)}  
+							handleClick={() => setShowRatioInput(true)} 
+							handleBlur={() => setShowRatioInput(false)}
+							showInput={showRatioInput}
+						/>
+					</div>
+				</div>
+			);
+		}
+
+		{/* this is the progress bar */}
+		function ProgressBar(props) {
+  			return (
+				<span>
+					{
+						props.showInput ? (
+							<div>
+								<div className="progress-background rounded-pill small">
+									<div className="px-3 text-center rounded-pill primary-background"
+										style={{
+											width: props.value + "%",
+										}}>
+										<div className="text-center">
+											<input 
+												type="number"
+												value={props.value}
+												onChange={props.handleChange}
+												onBlur={props.handleBlur}
+												autoFocus
+												max="100"
+												min="1"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+						) : (
+							<div onClick={props.handleClick}>
+								<div className="progress-background rounded-pill small">
+									<div className="px-3 text-center rounded-pill primary-background"
+										style={{
+											width: props.value + "%",
+											cursor: "pointer",
+										}}>
+										<div className="text-center text-white">
+											{props.value}%
+										</div>
+									</div>
+								</div>
+							</div>
+						)
+					}
+				</span>
+			);
+		}
+
+		{/* this is for the sections "Education" and "Work Experience" */}
+		function StageSection(props){
+			const [contentIsEditable, setContentIsEditable] = React.useState(false);
+			const [phasesCards, setPhasesCards] = React.useState([0]);
+			
+			return (
+				<>
+					<button onClick={() => setContentIsEditable(!contentIsEditable)} className="mb-3">
+						Edit All
+					</button>
+					<button onClick={() => setPhasesCards([...phasesCards, phasesCards.length])}>
+						Add
+					</button>
+					
+					{phasesCards.map((e, index) => 
+						<span key={e}>
+							<PhaseCard
+								deletePhaseCard={() => setPhasesCards(phasesCards.filter((a, i) => i !== index))}
+								contentIsEditable={contentIsEditable}
+								isLastPhaseCard={index == phasesCards.length - 1}
+								type={props.type}
+								where={props.where}
+								from={props.from}
+								to={props.to} 
+								description={props.description}							
+								isTextOrNumber={props.isTextOrNumber}
+							/>
+						</span>
+					)}
+				</>
+			)
+		}
+
+		{/* this is one element that contains instituition, period (date) and a degree/job description */}
+		function PhaseCard(props){
+			return(
+				<>
+					<div className="d-flex flex-column px-3">
+						<h5 className="institution">
+							<b>
+								{/*
+								<PhaseElement
+									activateall={props.eda}
+									phaseContent={props.where}
+									type="text"
+									isTextOrNumber={true}
+								/>
+								*/}
+								<InputMaker
+									showInput={props.contentIsEditable}
+									value={props.where}
+									type="text"
+									isTextOrNumber={true}
+								/>
+							</b>
+						</h5>
+						
+						<h6 className="primary-color d-flex align-items-center">
+							<i className="fa fa-calendar fa-fw me-3"></i>
+							{/*
+							<PhaseElement
+								activateall={props.eda}
+								phaseContent={props.from}
+								type={props.type}								
+								isTextOrNumber={props.isTextOrNumber}
+							/>
+							*/}
+							<InputMaker
+								showInput={props.contentIsEditable}
+								value={props.from}
+								type={props.type}
+								isTextOrNumber={props.isTextOrNumber}
+							/>
+							&nbsp;-&nbsp;
+							{/*
+							<PhaseElement
+								activateall={props.eda}
+								phaseContent={props.to}
+								type={props.type}							
+								isTextOrNumber={props.isTextOrNumber}
+							/>
+							*/}
+							<InputMaker
+								showInput={props.contentIsEditable}
+								value={props.to}
+								type={props.type}
+								isTextOrNumber={props.isTextOrNumber}
+							/>
+						</h6>
+					
+						<p>
+								{/*
+								<PhaseElement
+									activateall={props.eda}
+									phaseContent={props.description} 
+									type="text"
+									isTextOrNumber={true}
+								/>
+								*/}
+							<InputMaker
+								showInput={props.contentIsEditable}
+								value={props.description}
+								type="text"
+								isTextOrNumber={true}
+							/>
+						</p>
+						
+						<button onClick={props.deletePhaseCard} className="ms-auto mb-2">Delete</button>
+						
+						{props.isLastPhaseCard ? (
+							""
+						) : (
+							<hr />
+						)}
+					</div>
+				</>
+			)
+		}
+
+		{/* this was replaced so it is not used */}
+		function PhaseElement(props) {
+  			const [phaseContent, setPhaseContent] = React.useState(props.phaseContent);
+	
+			return (
+				<div>
+					<InputMaker
+						isTextOrNumber={props.isTextOrNumber}
+						type={props.type}
+						value={phaseContent}
+						handleChange={(e) => setPhaseContent(e.target.value)}  
+						showInput={props.activateall}
+					/>
+				</div>
+			);
+		}
+
+		{/* this is one social media editable link */}
+		function SocialMedia(props){
+			const [link, setLink] = React.useState(props.link);
+
+			return (
+				props.showInput ? (
+					<>
+						<a href="#" className="h6 text-white mx-3">
+							<i className={props.icon + " fa-xl me-2"}></i>
+						</a>
+						<input
+							onChange={(e) => setLink(e.target.value)}
+							value={link}
+						/>
+					</>
+				)
+				: (
+					<a href="#" className="h6 text-white mx-3">
+						<i className={props.icon + " fa-xl me-2"}></i>{link}
+					</a>
+				)	
+			)
+		}
+
+		{/* basic editable text/date depending on where it is used */}
+		function InputMaker(props) {
+			const [value, setValue] = React.useState(props.value);
+  			const months = ["Jan", "Feb","Mar","Apr","May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+			return (
+				<span>
+					{
+						props.showInput ? (
+							<input 
+								type={props.type}
+								value={value}
+								/*onChange={props.handleChange}*/
+								onChange={(e) => setValue(e.target.value)}
+								onBlur={props.handleBlur}
+								autoFocus
+
+								style={{
+									width: props.width,
+									textAlign: props.textAlign,
+								}}
+							/>
+						) : (
+							<span onClick={props.handleClick}
+								style={{
+									cursor: props.pointerOnHover ? "pointer" : "default", 
+								}}>
+								{
+									props.isTextOrNumber ? (
+										value
+									) : (
+										months[parseInt(value.slice(5, 7) - 1)] + " " + value.slice(0, 4)
+									)
+								}
+							</span>
+						)
+					}
+				</span>
+			);
+		}
+	
+		{/* summary section */}
+		function Summary() {
+			const [text, setText] = React.useState(
+				"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+			);
+			const [showInput, setShowInput] = React.useState(false);
+
+			return (
+				<span>
+					{
+						showInput ? (
+							<textarea className="w-100"
+								onChange={(e) => setText(e.target.value)}
+								onBlur={() => setShowInput(false)}
+								autoFocus
+								value={text}
+							/>
+						) : (
+							<span onClick={() => setShowInput(true)}
+								style={{
+									cursor: "pointer",
+								}}>
+								{text}
+							</span>
+						)
+					}
+				</span>
+			);
+		}
+
+		const root = ReactDOM.createRoot(document.getElementById("root"));
+		root.render(<App />);
+    </script>
+  </body>
+</html>

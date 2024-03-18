@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset = "utf-8">
+		<title>Tetris Game</title>
+	</head>
+
+	<style>
+		body{
+			text-align: center;
+			padding-top: 5%;
+			background-color: lightslategray;
+		}
+		canvas{
+			border: 1px solid black;
+		}
+		#container{
+			display: flex;
+			border: 1px solid black;
+			width: fit-content;
+			padding: 4px;
+			margin: auto;
+		}
+		#right-container{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		#next-canvas-container{
+			border: 1px solid black;
+			padding: 10px;
+			display: flex;		
+			justify-content: center;
+			align-items: center;
+			width: 100px;
+			height: 100px;
+		}
+		#controls{
+			text-align: left;
+			padding-left: 4px;
+		}
+	</style>
+
+	<body>
+		<!--
+		<p id = "t"></p>
+		<p id = "d"></p>
+		<p id = "s">0</p>
+		-->
+		<div id="container">
+			<canvas id="canvas"></canvas>
+			<div id="right-container">
+				<h1>NEXT</h1>
+				<div id="next-canvas-container">
+					<canvas id="nextCanvas"></canvas>
+				</div>
+				<div id="controls">
+					<h3>Controls</h3>
+					<p><strong>Arrows : </strong>Move</p>
+					<p><strong>D : </strong>Rotate Clockwise</p>
+					<p><strong>Q : </strong>Rotate Anti-clockwise</p>
+				</div>
+			</div>
+		</div>
+		
+		<script>
+			var canvas = document.getElementById("canvas");
+			var ctx = canvas.getContext("2d");
+			canvas.width = 300;
+			canvas.height = 500;
+			
+			var nextCanvas = document.getElementById("nextCanvas");
+			var nextCtx = nextCanvas.getContext("2d");
+			nextCanvas.width = 125;
+			nextCanvas.height = 125;
+			
+			var ZBlock = {
+				/*ht : 50,*/
+				color : "lime",
+				shape : [
+					[1, 1, 0],
+					[1, 0, 0],
+					[1, 0, 1]
+				]
+			};
+			var SBlock = {
+				/*ht : 50,*/
+				color : "yellow",
+				shape : [
+					[0, 1, 1],
+					[0, 0, 1],
+					[1, 0, 1]
+				]
+			};
+			var TBlock = {
+				/*ht : 50,*/
+				color : "red",
+				shape : [
+					[0, 1, 1],
+					[0, 0, 1],
+					[0, 1, 1]
+				]
+			};
+			var cube = {
+				/*ht : 50,*/
+				color : "white",
+				shape : [
+					[0, 0],
+					[0, 0]
+				]
+			};
+			var LBlock = {
+				/*ht : 75,*/
+				color : "blue",
+				shape : [
+					[1, 0, 1],
+					[1, 0, 1],
+					[1, 0, 0]
+				]
+			};
+			var JBlock = {
+				/*ht : 75,*/
+				color : "magenta",
+				shape : [
+					[1, 0, 1],
+					[1, 0, 1],
+					[0, 0, 1]
+				]
+			};
+			var IBlock = {
+				/*ht : 75,*/
+				color : "indigo",
+				shape : [
+					[1, 0, 1, 1],
+					[1, 0, 1, 1],
+					[1, 0, 1, 1],
+					[1, 0, 1, 1]
+				]
+			};
+			
+			
+			
+			
+			
+			function clearCanvases(){			
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+			}
+
+			/*
+			var dirs = Math.floor(Math.random() * 4);
+			var init = dirs;
+			*/
+			
+			var blocks = [ZBlock, SBlock, TBlock, cube, LBlock, JBlock, IBlock];
+			// chose a random block from "blocks"
+			var n = Math.floor(Math.random() * blocks.length);
+			
+			// assign the chosen random block shape and color to the first block
+			var currentBlock = blocks[n].shape;
+			var currentBlockColor = blocks[n].color;
+			// we represent each direction "east, west, north, south" by a number from 0 to 3, it is chosed randomly here
+			var currentBlockDirection = Math.floor(Math.random() * 4);
+			// chose another random block from "blocks" and assign it to the next block
+			var m = Math.floor(Math.random() * blocks.length);
+			var nextBlock = blocks[m].shape;
+			var nextBlockColor = blocks[m].color;
+			var nextBlockDirection = Math.floor(Math.random() * 4);
+			var y=-25;
+			var x=0;
+			var blockHeight;
+			keypressed = false;
+			var colorSample;
+			var imgd2;
+			var imgd3;
+			var cordx;
+			var cordy;
+			var nxtx;
+			var nxty;
+			var clr;
+			var fixx=0;
+			var fixy;
+			var blocksHeap = [];
+			var cl;
+			/*var currentPos = [];*/
+			var btmline = [[, ], [, ], [, ]];
+			var tet = 0;
+			var first = [];
+			var second = [];
+			var third = [];
+			var blockPartsPositions = [];
+			var collision;
+			var freeLeftSide=true;
+			var freeRightSide=true;
+			var freeBottomSpace=true;
+			var dis = canvas.width/2;
+			var timer = 0;
+			var repeate;
+			var outlneclr;
+			var outsidelft = 0;
+			var outsiderght = canvas.width-25;
+			var clsnline;
+			var linechk;
+			var rgbTotalSum=0;
+			var linesToBeVerified = [];
+			var elmnt;
+			var min=600;
+			var lineIsClear;
+			var cleared = 0;
+
+			window.addEventListener('keydown', function(e){
+				keypressed = e.keyCode;
+				// keycodes 68 and 81 corespond to D and Q buttons, which are used to rotate the block
+				if(keypressed == 68){
+					currentBlockDirection += 1;
+					if(currentBlockDirection == 4){
+						currentBlockDirection = 0;
+					}
+				}
+				if(keypressed == 81){
+					currentBlockDirection -= 1;
+					if(currentBlockDirection == -1){
+						currentBlockDirection = 3;
+					}
+				}
+
+
+				// keycode 65 represent the A button
+				if(keypressed == 65){
+					alert("Game Paused")
+				}
+			})
+			/*if(!collision){
+					if(keypressed == 37 && freeLeftSide == true){
+						dis -= 25;
+					}
+					if(keypressed == 39 && freeRightSide == true){
+						dis += 25;
+					}
+					if(keypressed == 40 && freeBottomSpace == true){
+						y += 25;
+					}*/
+
+			window.addEventListener('keyup', function(e){
+				keypressed = false;
+			})
+			
+			// setup the foundation
+			function foundationSetup(){
+				for(i = 0; i < canvas.width + 25; i += 25){		
+					blocksHeap.push([i, canvas.height, "green"]);
+					/*blocksHeap.push([i, canvas.height - 50, "green"]);*/
+				}
+			}
+
+			// draw canvases background in each frame
+			function drawCanvasesBackground(){
+				nextCtx.fillStyle = "black";
+				nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+				ctx.fillStyle = "black";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+			}
+
+			foundationSetup();
+
+			function updateFrame(){
+				timer += 1;
+				
+				/*
+				if(outsidelft < 0){
+					alert("after")
+					
+				}
+				*/
+
+				if(collision){
+					// after collision, the next block's Y position should be -25 which is the top of our canvas
+					y = -25;
+					
+					//n = Math.floor(Math.random() * blocks.length);
+					currentBlock = nextBlock;
+					currentBlockColor = nextBlockColor;
+					currentBlockDirection = nextBlockDirection;
+
+					m = Math.floor(Math.random() * blocks.length);
+					nextBlock = blocks[m].shape;
+					nextBlockColor = blocks[m].color;
+					nextBlockDirection = Math.floor(Math.random() * 4);
+
+					dis = canvas.width / 2;
+				}
+				
+				collision = false;
+				
+				// replaced with event listener above
+				/*
+				if(keypressed == 68){
+					currentBlockDirection += 1;
+					if(currentBlockDirection == 4){
+						currentBlockDirection = 0;
+					}
+					//keypressed = false;
+				}*/
+				/*
+				if(keypressed == 81){
+					currentBlockDirection -= 1;
+					if(currentBlockDirection == -1){
+						currentBlockDirection = 3;
+					}
+					//keypressed = false;
+				}
+				*/
+				
+				/*
+				if(nextBlockDirection == 4){
+					nextBlockDirection = 0;
+				}
+				if(nextBlockDirection == -1){
+					nextBlockDirection = 3;
+				}*/
+				
+				if(timer==5){repeate = true;}
+				if(repeate==true){y += 25; timer=0;}
+				repeate = false;
+				
+				nextCanvas.width = nextBlock.length * 25;
+				nextCanvas.height = nextBlock.length * 25;
+
+				clearCanvases();
+
+				drawCanvasesBackground();
+
+				//replaced with "drawCanvasesBackground"
+				/*
+				nextCtx.fillStyle = "black";
+				nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);		
+				ctx.fillStyle = "black";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				*/
+				
+
+				/*if(keypressed == 39){y=0;}*/
+
+				// placing the next block in the next canvas appropiately according to its direction
+				for(g = 0; g < nextBlock.length; g++){
+					for(h = 0; h < nextBlock.length; h++){
+						if(nextBlock[g][h] == 0){
+							
+							/*
+							[1, 0, 1],
+							[1, 0, 1],
+							[1, 0, 0]
+							*/
+							
+							if(nextBlockDirection == 0){
+								nxtx = h * 25;
+								nxty = g * 25;
+							}
+							
+							if(nextBlockDirection == 1){
+								nxtx = ((nextBlock.length - 1) * 25) - (g * 25);
+								nxty = h * 25;
+							}
+							
+							if(nextBlockDirection == 2){
+								nxtx = ((nextBlock.length - 1) * 25) - (h * 25);
+								nxty = ((nextBlock.length - 1) * 25) - (g * 25);
+							}
+							
+							if(nextBlockDirection == 3){
+								nxtx = g * 25;
+								nxty = ((nextBlock.length - 1) * 25) - (h * 25);
+							}
+							
+							nextCtx.fillStyle = nextBlockColor;
+							nextCtx.fillRect(nxtx, nxty, 25, 25);
+							nextCtx.strokeRect(nxtx, nxty, 25, 25);
+						}
+					}
+				}
+
+				for(i = 0; i < currentBlock.length; i++){
+					for(j = 0; j < currentBlock.length; j++){
+						if(currentBlock[i][j] == 0){
+							if(currentBlockDirection == 0){
+								cordx = j * 25;
+								cordy = i * 25;
+							}
+							if(currentBlockDirection == 1){
+								cordx = ((currentBlock.length - 1) * 25) - (i * 25);
+								cordy = j * 25;
+							}	
+							if(currentBlockDirection == 2){
+								cordx = ((currentBlock.length - 1) * 25) - (j * 25);
+								cordy = ((currentBlock.length - 1) * 25) - (i * 25);
+							}							
+							if(currentBlockDirection == 3){
+								cordx = i * 25;
+								cordy = ((currentBlock.length - 1) * 25) - (j * 25);
+							}
+							
+							/*
+							if(cordx + dis < outsidelft){
+								outsidelft = cordx + dis;
+								
+							}
+							*/
+
+							// "blockPartsPositions" stores the X & Y coordinates of each piece of current block to so we draw it on canvas, on every frame
+							blockPartsPositions.push([cordx + dis, cordy + y, currentBlockColor]);
+							
+							
+							if(blockPartsPositions[blockPartsPositions.length-1][0] < outsidelft){
+								outsidelft = blockPartsPositions[blockPartsPositions.length-1][0];
+								
+							}
+							if(blockPartsPositions[blockPartsPositions.length-1][0] > outsiderght){
+								outsiderght = blockPartsPositions[blockPartsPositions.length-1][0];
+							}
+							
+							
+
+							for(z = 0; z < blocksHeap.length; z++){
+								// check if current block "fell" on the heap, if both X & Y coordinates of at least one piece of current block match X & Y coordinates of any piece of the heap  
+								if(blockPartsPositions[blockPartsPositions.length-1][0] == blocksHeap[z][0] &&
+									blockPartsPositions[blockPartsPositions.length-1][1] == blocksHeap[z][1]){
+									//document.getElementById("d").innerHTML = "zzzz";
+									collision = true;
+								}
+								if((blockPartsPositions[blockPartsPositions.length-1][0] == blocksHeap[z][0] &&
+									blockPartsPositions[blockPartsPositions.length-1][1] == blocksHeap[z][1] - 25)){
+									freeBottomSpace = false;
+								}
+								if((blockPartsPositions[blockPartsPositions.length-1][0] == blocksHeap[z][0] + 25 &&
+									blockPartsPositions[blockPartsPositions.length-1][1] == blocksHeap[z][1])
+									|| blockPartsPositions[blockPartsPositions.length-1][0] == 0){
+									freeLeftSide = false;
+								}
+								if((blockPartsPositions[blockPartsPositions.length-1][0] + 25 == blocksHeap[z][0] &&
+									blockPartsPositions[blockPartsPositions.length-1][1] == blocksHeap[z][1])
+									|| blockPartsPositions[blockPartsPositions.length-1][0] == canvas.width - 25){
+									freeRightSide = false;
+								}
+								
+							}
+							
+							/*ctx.fillStyle = clr;
+							ctx.fillRect(cordx+200, cordy+y, 25, 25);*/
+							
+							/*document.getElementById("t").innerHTML = currentBlockDirection/*imgd2.data[0]+imgd2.data[1]+imgd2.data[2]*/;
+						} 
+					}
+					
+				}
+
+				dis -= outsidelft;
+				dis -= (outsiderght - canvas.width + 25);
+				
+				// this is a test replaced with lines 428 445 446 482 483
+				/*
+				if(outsidelft < 0){
+					for(s = 0; s < blockPartsPositions.length; s++){	
+						blockPartsPositions[s][0] -= outsidelft;
+						
+						for(t = 0; t < blocksHeap.length; t++){
+							if(blockPartsPositions[s][0] == blocksHeap[t][0] && blockPartsPositions[s][1] == blocksHeap[t][1]){
+								collision = true;
+							}
+							if((blockPartsPositions[s][0] == blocksHeap[t][0] && blockPartsPositions[s][1] == blocksHeap[t][1] - 25)){
+								freeBottomSpace = false;
+							}
+						}
+					}
+				}*/
+				
+				
+				outsidelft = 0;
+				outsiderght = canvas.width - 25;
+				
+
+				min = 600;
+				
+				// get the height of current block so we can use it later to check which lines should be cleared if there is collision
+				if(currentBlock == IBlock.shape && (currentBlockDirection == 1 || currentBlockDirection == 3)){
+					blockHeight = 1;
+				}
+				else if(currentBlockDirection == 1 || currentBlockDirection == 3){
+					blockHeight = 2;
+				}
+				else{
+					blockHeight = currentBlock.length;
+				}
+				
+
+				// if no X & Y coordinates of any piece of current block match any X & Y coordinates of any piece of the heap, then the current block is in mid-air
+				if(!collision){
+					if(keypressed == 37 && freeLeftSide == true){
+						dis -= 25;
+					}
+					if(keypressed == 39 && freeRightSide == true){
+						dis += 25;
+					}
+					if(keypressed == 40 && freeBottomSpace == true){
+						y += 25;
+					}
+					// draw our current block (for one frame)
+					for(s = 0; s < blockPartsPositions.length; s++){
+						ctx.fillStyle = currentBlockColor;
+						ctx.fillRect(blockPartsPositions[s][0], blockPartsPositions[s][1], 25, 25);
+						ctx.strokeRect(blockPartsPositions[s][0], blockPartsPositions[s][1], 25, 25);
+					}
+					
+				}
+
+				/*
+				outsidelft = 0;
+				outsiderght = canvas.width - 25;
+				*/
+
+				// check if the block "fell" on the heap
+				if(collision){
+					linesToBeVerified = [];
+					for(h = 0; h < blockPartsPositions.length; h++){
+						blocksHeap.push([blockPartsPositions[h][0], blockPartsPositions[h][1] - 25, blockPartsPositions[h][2]]);
+						// take the y of the highest piece of current block and store it in "min", and by using "blockHeight" in a loop, we can get an array of the y coordinates of lines to be cleared after the heap is updated
+						if(blockPartsPositions[h][1] - 25 < min){
+							min = blockPartsPositions[h][1] - 25;
+						}
+						// check if any piece of current block has a negative Y coordinates, which means the game is lost
+						if(blockPartsPositions[h][1] < 0){
+							// if so, clear the canvas for a new game
+							blocksHeap = [];
+							// setup the foundation
+							foundationSetup();
+						}
+					}
+					
+					// get an interval that corresponds to the height of current block
+					for(g = 0; g < blockHeight; g++){
+						linesToBeVerified.push([min + (g * 25)]);
+					}
+					
+
+					/*for(d=0; d<linesToBeVerified.length; d++)
+					{
+						lineIsClear = true;
+						for(f=0; f<canvas.width; f+=25)
+						{
+							colorSample = ctx.getImageData(f, linesToBeVerified[d], 25, 25);
+							rgbTotalSum = colorSample.data[0] + colorSample.data[1] + colorSample.data[2];
+							if(rgbTotalSum==0)
+							{
+								lineIsClear = false;
+							}
+						}
+						if(lineIsClear==true)
+						{
+							for(s=0; s<blocksHeap.length; s++)
+							{
+								/*if(blocksHeap[s][1]==linesToBeVerified[d])
+								{
+									blocksHeap.splice(s, 1);
+								}
+								blocksHeap.splice(s, 4)
+							}
+						}
+					}*/
+					
+				}
+				
+				
+
+				//document.getElementById("s").innerHTML = currentBlockDirection + " " + nextBlockDirection;
+				freeRightSide = true;
+				freeLeftSide = true;
+				freeBottomSpace = true;
+				
+				/*for(k=200; k<275; k+=25)
+				{
+					for(l=0; l<500; l+=25)
+					{
+						imgd2 = ctx.getImageData(k, l, 25, 25);
+						cl = imgd2.data[0]+imgd2.data[1]+imgd2.data[2];
+						if(cl > 0)
+						{
+							currentPos.push([k, l]);
+							
+						}
+						
+					}
+				}
+				document.getElementById("t").innerHTML = currentPos[3][0] + "-" + currentPos[3][1];
+				/*document.getElementById("s").innerHTML = blockPartsPositions[0] + blockPartsPositions[1] + blockPartsPositions[2];*/
+				
+				/*for(m=1; m<currentPos.length+1; m++)
+				{
+					if(currentPos[m][0]>currentPos[m-1][0])
+					{
+						blockPartsPositions[tet] = currentPos[m-1];
+						blockPartsPositions[tet + 1] = currentPos[m];
+						
+					}
+				}*/
+				/*blocksHeap = [];*/
+				
+				// draw the updated heap
+				for(q = 0; q < blocksHeap.length; q++){
+					ctx.fillStyle = blocksHeap[q][2];
+					ctx.fillRect(blocksHeap[q][0], blocksHeap[q][1], 25, 25);			
+					ctx.strokeRect(blocksHeap[q][0], blocksHeap[q][1], 25, 25);
+					
+				}
+				
+				// check collision after the heap is updated to verify which lines should be cleared
+				if(collision){
+					// to check which lines should be cleared, we are concerned only with the interval of lines that represent the height of current block
+					for(d = 0; d < linesToBeVerified.length; d++){
+						lineIsClear = true;
+						// we check a line to see if it should be cleared
+						for(f = 0; f < canvas.width; f += 25){
+							// we take the color of each square of each line that is located in the interval "blockHeight" which represents the height of current block
+							colorSample = ctx.getImageData(f, linesToBeVerified[d], 25, 25);
+							// we add the 3 values of "colorSample" object which represent RGB colors
+							rgbTotalSum = colorSample.data[0] + colorSample.data[1] + colorSample.data[2];
+							// if the sum of RGB values of "colorSample" is 0 then current square is black and therefore the current line should not be cleared, but if every square in current line is not black then the code below won't be executed and "lineIsClear" would stay "true" as we declared above this loop
+							
+							if(rgbTotalSum == 0){
+								lineIsClear = false;
+								break;
+								
+							}
+						}
+						//2 or more lines cleared glitch
+						if(lineIsClear == true){
+							/*
+							alert(linesToBeVerified[d])
+							alert(linesToBeVerified.length)
+							*/
+							/*cleared += 1;*/
+
+							for(s = 0; s < blocksHeap.length; s++){
+								if(blocksHeap[s][1] == linesToBeVerified[d]){
+									blocksHeap[s].splice(0, 3);
+									
+								}						
+							}
+							
+							for(h = 0; h < blocksHeap.length; h++){
+								if(blocksHeap[h][1] < linesToBeVerified[d]){
+									blocksHeap[h][1] += 25;								
+								}
+								
+							}
+							
+						}
+					}
+				}
+				
+				
+
+				blockPartsPositions = [];
+				/*currentPos = [];*/
+				/*linesToBeVerified = [];*/
+				/*rgbTotalSum = 0;*/
+				/*lineIsClear = true;*/
+				/*cleared = 0;*/
+			}
+			
+			setInterval(updateFrame, 100);
+			
+		</script>
+	</body>
+</html> 
