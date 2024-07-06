@@ -26,6 +26,24 @@
 		right: 4px;
 	}
 
+	input[type="file"]{
+		display: none;
+	}
+
+	label {
+		position: relative;
+		left: -8px;
+		top: -1px;
+		width: 120%;
+		height: 29px;
+		margin-bottom: -6px;
+		cursor: pointer;
+  	}
+
+	#profile-picture{
+		border-radius: 50%;
+	}
+
 	button{
 		border: 1px solid gray;
 		border-radius: 4px;
@@ -109,6 +127,17 @@
     <script type="text/babel">
 		function App() {
 			const [showInput, setShowInput] = React.useState(false);
+			const [image, setImage] = React.useState(null)
+
+			const handleFile = async (e) => {
+				const file = e.target.files[0]
+				const fileReader = new FileReader()
+				fileReader.readAsDataURL(file)
+				fileReader.onload = () => {
+					const result = fileReader.result
+					setImage(result)
+				}
+			}
 
 			return (
 				<>
@@ -122,7 +151,7 @@
 									<div>
 										<div className="d-flex justify-content-center">
 											{/*<img src="myimg.jpg" style={{width:"150px",height:"150px"}} alt="Avatar" />*/}
-											<div className="border d-flex align-items-center text-center mt-3" style={{
+											<div className="border d-flex align-items-center text-center mt-3 position-relative" style={{
 												width: "190px",
 												height: "190px",
 												backgroundImage: "url('img.jpg')",
@@ -132,8 +161,21 @@
 												borderRadius: "50%",
 												cursor: "pointer",
 											}} onClick={toggleButtons}>
-												<h3 onClick={(e) => removeSection(e.target)}>Click here to show/hide buttons (img.jpg)</h3>
+												<h3>Click here to show/hide buttons</h3>
+												<img src={image} width="190" height="190" id="profile-picture" className="position-absolute" />
 											</div>
+											<input
+												type="file"
+												name="file"
+												id="file-input"
+												onChange={handleFile}
+											/>
+										</div>
+
+										<div className="d-flex">
+											<button className="mx-auto">
+												<label htmlFor="file-input">Add Image</label>
+											</button>
 										</div>
 
 										<h2 className="text-center">
