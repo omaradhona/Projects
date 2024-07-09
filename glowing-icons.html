@@ -206,31 +206,48 @@
     }
   }
 
-  @keyframes glow-python-blue {
+  @keyframes glow-python {
     0% {
-      text-shadow: 0 0 80px #377eef;
+      text-shadow: -8px -8px 80px #0062ff,
+                    8px 8px 80px #f4c53f;
     }
 
     50% {
-      text-shadow: 0 0 40px #377eef;
+      text-shadow: -8px -8px 40px #377eef,
+                   8px 8px 40px #f4c53f;
     }
 
     100% {
-      text-shadow: 0 0 80px #377eef;
+      text-shadow: -8px -8px 80px #377eef,
+                    8px 8px 80px #f4c53f;
     }
   }
 
-  @keyframes glow-python-yellow {
+  @keyframes glow-ruby {
     0% {
-      text-shadow: 0 0 80px #f8c63d;
+      text-shadow: 0 0 80px #e71825;
     }
 
     50% {
-      text-shadow: 0 0 40px #f8c63d;
+      text-shadow: 0 0 40px #e71825;
     }
 
     100% {
-      text-shadow: 0 0 80px #f8c63d;
+      text-shadow: 0 0 80px #e71825;
+    }
+  }
+
+  @keyframes glow-swift {
+    0% {
+      text-shadow: 0 0 80px #fb3b25;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #fb3b25;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #fb3b25;
     }
   }
 
@@ -415,29 +432,33 @@
     position: absolute;
   }
 
-  .my-icons.python{
-    display: flex;
-    flex-direction: column;
-  }
-
   .python .fa-circle{
-    font-size: 12px;
-    
-  }
-
-  .fa-circle.python-blue{
-    animation: glow-python-blue infinite 4s;
-  }
-
-  .fa-circle.python-yellow{
-    animation: glow-python-yellow infinite 4s;
-  }
-
-  .python-center-circles .fa-circle{
-    font-size: 20px;
+    font-size: 55px;
+    color: transparent;
+    animation: glow-python infinite 4s;
   }
 
   .python img{
+    position: absolute;
+  }
+
+  .ruby .fa-circle{
+    font-size: 50px;
+    color: transparent;
+    animation: glow-ruby infinite 4s;
+  }
+
+  .ruby img{
+    position: absolute;
+  }
+
+  .swift .fa-circle{
+    font-size: 50px;
+    color: transparent;
+    animation: glow-swift infinite 4s;
+  }
+
+  .swift img{
     position: absolute;
   }
 </style>
@@ -455,7 +476,7 @@
     function App() {
       return (
         <div className="col-md-10 col-lg-6 d-flex justify-content-center mx-auto">
-          <div className="col-12 col-lg-10  p-5 d-flex flex-wrap row-gap-5 techs">
+          <div className="col-12 col-lg-10 p-5 d-flex flex-wrap row-gap-5 techs">
 
             {/*
             <span className="col-3 col-lg-4 text-center d-flex justify-content-center align-items-center position-relative">
@@ -544,13 +565,18 @@
             </div>
 
             <div className="my-icons python">
-              <span className="fa-solid fa-circle python-blue"></span>
-              <span className="python-center-circles">
-                <span className="fa-solid fa-circle python-blue"></span>
-                <span className="fa-solid fa-circle python-yellow"></span>
-              </span>
-              <span className="fa-solid fa-circle python-yellow"></span>
+              <span className="fa-solid fa-circle python"></span>
               <img src="icons/python.png" width="73" height="73" />
+            </div>
+
+            <div className="my-icons ruby">
+              <span className="fa-solid fa-circle ruby"></span>
+              <img src="icons/ruby.png" width="73" height="73" />
+            </div>
+
+            <div className="my-icons swift">
+              <span className="fa-solid fa-circle swift"></span>
+              <img src="icons/swift.png" width="73" height="73" />
             </div>
 
 
