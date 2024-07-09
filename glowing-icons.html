@@ -122,6 +122,132 @@
     }
   }
 
+  @keyframes glow-cpp {
+    0% {
+      text-shadow: 0 0 80px #017fcc;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #017fcc;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #017fcc;
+    }
+  }
+
+  @keyframes glow-c {
+    0% {
+      text-shadow: 0 0 80px #5d6cc1;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #5d6cc1;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #5d6cc1;
+    }
+  }
+
+  @keyframes glow-java-smoke {
+    0% {
+      text-shadow: 0 0 80px #f39110;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #f39110;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #f39110;
+    }
+  }
+
+  @keyframes glow-java-cup {
+    0% {
+      text-shadow: 0 0 80px #178099;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #178099;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #178099;
+    }
+  }
+  
+  @keyframes glow-django {
+    0% {
+      text-shadow: 0 0 80px #229b6d;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #229b6d;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #229b6d;
+    }
+  }
+
+  @keyframes glow-php {
+    0% {
+      text-shadow: 0 0 80px #757cb2;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #757cb2;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #757cb2;
+    }
+  }
+
+  @keyframes glow-python-blue {
+    0% {
+      text-shadow: 0 0 80px #377eef;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #377eef;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #377eef;
+    }
+  }
+
+  @keyframes glow-python-yellow {
+    0% {
+      text-shadow: 0 0 80px #f8c63d;
+    }
+
+    50% {
+      text-shadow: 0 0 40px #f8c63d;
+    }
+
+    100% {
+      text-shadow: 0 0 80px #f8c63d;
+    }
+  }
+
+  @keyframes glow- {
+    0% {
+      text-shadow: 0 0 80px red;
+    }
+
+    50% {
+      text-shadow: 0 0 40px red;
+    }
+
+    100% {
+      text-shadow: 0 0 80px red;
+    }
+  }
+
   /* ****************************************************** ICONS ***************************************************************** */
 
   body{
@@ -228,6 +354,92 @@
     background-color: white;
     /*border-left: 44px solid white;*/
   }
+
+  .cpp, .c{
+    font-size: 53px;
+  }
+
+  .cpp img, .c img{
+    position: absolute;
+  }
+
+  .fa-circle.cpp{
+    color: transparent;
+    animation: glow-cpp infinite 4s;
+  }
+
+  .fa-circle.c{
+    color: transparent;
+    animation: glow-c infinite 4s;
+  }
+
+  .java{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .java-smoke{
+    font-size: 22px;
+    color: transparent;
+    animation: glow-java-smoke infinite 4s;
+  }
+
+  .java-cup{
+    font-size: 45px;
+    color: transparent;
+    animation: glow-java-cup infinite 4s;
+  }
+
+  .java img{
+    position: absolute;
+  }
+
+  .fa-circle.django{
+    color: transparent;
+    font-size: 60px;
+    animation: glow-django infinite 4s;
+  }
+
+  .django img{
+    position: absolute;
+  }
+
+  .fa-circle.php{
+    color: transparent;
+    font-size: 40px;
+    animation: glow-php infinite 4s;
+  }
+
+  .php img{
+    position: absolute;
+  }
+
+  .my-icons.python{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .python .fa-circle{
+    font-size: 12px;
+    
+  }
+
+  .fa-circle.python-blue{
+    animation: glow-python-blue infinite 4s;
+  }
+
+  .fa-circle.python-yellow{
+    animation: glow-python-yellow infinite 4s;
+  }
+
+  .python-center-circles .fa-circle{
+    font-size: 20px;
+  }
+
+  .python img{
+    position: absolute;
+  }
 </style>
 
 <body>
@@ -311,8 +523,45 @@
             </span>
             */}
 
-            
+            <div className="my-icons cpp">
+              <span className="fa-solid fa-circle cpp"></span>
+              <img src="icons/cpp.png" width="73" height="73" />
+            </div>
 
+            <div className="my-icons c">
+              <span className="fa-solid fa-circle c"></span>
+              <img src="icons/c.png" width="73" height="73" />
+            </div>
+
+            <div className="my-icons django">
+              <span className="fa-solid fa-circle django"></span>
+              <img src="icons/django.png" width="73" height="73" />
+            </div>
+
+            <div className="my-icons php">
+              <span className="fa-solid fa-circle php"></span>
+              <img src="icons/php.png" width="73" height="43" />
+            </div>
+
+            <div className="my-icons python">
+              <span className="fa-solid fa-circle python-blue"></span>
+              <span className="python-center-circles">
+                <span className="fa-solid fa-circle python-blue"></span>
+                <span className="fa-solid fa-circle python-yellow"></span>
+              </span>
+              <span className="fa-solid fa-circle python-yellow"></span>
+              <img src="icons/python.png" width="73" height="73" />
+            </div>
+
+
+
+
+
+            <div className="my-icons java">
+              <span className="fa-solid fa-circle java-smoke"></span>
+              <span className="fa-solid fa-circle java-cup"></span>
+              <img src="icons/java.webp" width="73" height="73" />
+            </div>
 
 
 
